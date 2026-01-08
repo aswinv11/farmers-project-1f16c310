@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Download, FileText, TrendingUp } from "lucide-react";
+import { Download, FileText, TrendingUp, CheckCircle2 } from "lucide-react";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import type { SoilData } from "@/pages/Index";
@@ -254,9 +254,11 @@ export const ReportGenerator = ({ soilData, t }: ReportGeneratorProps) => {
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <FileText className="h-5 w-5 text-primary" />
+            </div>
             Generate Report
           </CardTitle>
           <CardDescription>
@@ -265,39 +267,55 @@ export const ReportGenerator = ({ soilData, t }: ReportGeneratorProps) => {
         </CardHeader>
         <CardContent>
           {soilData.length === 0 ? (
-            <div className="text-center py-8">
-              <TrendingUp className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <p className="text-muted-foreground">
+            <div className="text-center py-12">
+              <div className="mx-auto mb-4 p-4 rounded-full bg-muted w-fit">
+                <TrendingUp className="h-10 w-10 text-muted-foreground" />
+              </div>
+              <p className="text-muted-foreground max-w-xs mx-auto">
                 No data available for report generation. 
                 Start recording soil measurements to generate reports.
               </p>
             </div>
           ) : (
-            <div className="space-y-4">
-              <div className="bg-muted/30 p-4 rounded-lg">
-                <h3 className="font-medium mb-2">Report Contents:</h3>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• Summary statistics and averages</li>
-                  <li>• Latest soil readings</li>
-                  <li>• Historical data table ({Math.min(soilData.length, 15)} recent entries)</li>
-                  <li>• Soil health analysis and recommendations</li>
-                  <li>• Crop suggestions based on current conditions</li>
-                  {soilData.length > 3 && <li>• Trend analysis over time</li>}
+            <div className="space-y-5">
+              <div className="bg-muted/30 p-5 rounded-xl border border-border/50">
+                <h3 className="font-semibold mb-3 text-sm">Report Contents:</h3>
+                <ul className="text-sm text-muted-foreground space-y-2">
+                  {[
+                    "Summary statistics and averages",
+                    "Latest soil readings",
+                    `Historical data table (${Math.min(soilData.length, 15)} recent entries)`,
+                    "Soil health analysis and recommendations",
+                    "Crop suggestions based on current conditions",
+                    ...(soilData.length > 3 ? ["Trend analysis over time"] : [])
+                  ].map((item, index) => (
+                    <li key={index} className="flex items-center gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-soil-success shrink-0" />
+                      {item}
+                    </li>
+                  ))}
                 </ul>
               </div>
               
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div>
-                  <p className="font-medium">Soil Health Report</p>
-                  <p className="text-sm text-muted-foreground">
-                    {soilData.length} readings • Generated on {new Date().toLocaleDateString()}
-                  </p>
-                </div>
-                <Button onClick={generatePDFReport} className="flex items-center gap-2">
-                  <Download className="h-4 w-4" />
-                  Download PDF
-                </Button>
-              </div>
+              <Card className="bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20">
+                <CardContent className="py-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="font-semibold">Soil Health Report</p>
+                      <p className="text-sm text-muted-foreground">
+                        {soilData.length} readings • Generated on {new Date().toLocaleDateString()}
+                      </p>
+                    </div>
+                    <Button 
+                      onClick={generatePDFReport} 
+                      className="flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download PDF
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           )}
         </CardContent>

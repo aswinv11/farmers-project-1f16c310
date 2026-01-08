@@ -9,7 +9,7 @@ import { ReportGenerator } from "@/components/ReportGenerator";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Leaf, BarChart3, Lightbulb, Cloud, FileText, LogOut } from "lucide-react";
+import { Leaf, BarChart3, Lightbulb, Cloud, FileText, LogOut, Wifi, WifiOff } from "lucide-react";
 import { toast } from "sonner";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuth } from "@/hooks/useAuth";
@@ -102,9 +102,12 @@ const Index = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="flex items-center gap-2">
-          <Leaf className="h-6 w-6 animate-pulse text-primary" />
-          <span className="text-lg">Loading...</span>
+        <div className="flex flex-col items-center gap-3">
+          <div className="relative">
+            <div className="h-12 w-12 rounded-full bg-primary/20 animate-pulse-soft" />
+            <Leaf className="h-6 w-6 text-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+          </div>
+          <span className="text-muted-foreground font-medium">Loading...</span>
         </div>
       </div>
     );
@@ -118,25 +121,36 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-primary text-primary-foreground p-4 shadow-lg">
-        <div className="flex items-center justify-between max-w-md mx-auto">
-          <div className="flex items-center gap-2">
-            <Leaf className="h-6 w-6" />
-            <h1 className="text-lg font-bold">{t.header.title}</h1>
+      <header className="bg-gradient-to-r from-primary to-primary/85 text-primary-foreground py-4 px-4 shadow-lg">
+        <div className="flex items-center justify-between max-w-lg mx-auto">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary-foreground/15 rounded-lg backdrop-blur-sm">
+              <Leaf className="h-5 w-5" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold tracking-tight">{t.header.title}</h1>
+              <p className="text-xs text-primary-foreground/70">Smart Agriculture</p>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <LanguageSwitcher 
               currentLanguage={language}
               onLanguageChange={switchLanguage}
               label={t.common.language}
             />
-            <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-400' : 'bg-red-400'}`} />
-            <span className="text-sm">{isOnline ? t.header.online : t.header.offline}</span>
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary-foreground/15 backdrop-blur-sm">
+              {isOnline ? (
+                <Wifi className="h-3.5 w-3.5 text-soil-success" />
+              ) : (
+                <WifiOff className="h-3.5 w-3.5 text-destructive" />
+              )}
+              <span className="text-xs font-medium">{isOnline ? t.header.online : t.header.offline}</span>
+            </div>
             <Button
               variant="ghost"
-              size="sm"
+              size="icon"
               onClick={handleSignOut}
-              className="text-primary-foreground hover:bg-primary-foreground/10"
+              className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/15"
             >
               <LogOut className="h-4 w-4" />
             </Button>
@@ -145,44 +159,59 @@ const Index = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-md mx-auto p-4">
+      <main className="max-w-lg mx-auto p-4 pb-8">
         <Tabs defaultValue="input" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-6">
-            <TabsTrigger value="input" className="flex flex-col gap-1 py-3">
+          <TabsList className="grid w-full grid-cols-5 mb-6 h-auto p-1.5 bg-muted/60 rounded-xl">
+            <TabsTrigger 
+              value="input" 
+              className="flex flex-col gap-1.5 py-3 px-2 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm"
+            >
               <Leaf className="h-4 w-4" />
-              <span className="text-xs">{t.tabs.input}</span>
+              <span className="text-[10px] font-medium">{t.tabs.input}</span>
             </TabsTrigger>
-            <TabsTrigger value="dashboard" className="flex flex-col gap-1 py-3">
+            <TabsTrigger 
+              value="dashboard" 
+              className="flex flex-col gap-1.5 py-3 px-2 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm"
+            >
               <BarChart3 className="h-4 w-4" />
-              <span className="text-xs">{t.tabs.data}</span>
+              <span className="text-[10px] font-medium">{t.tabs.data}</span>
             </TabsTrigger>
-            <TabsTrigger value="recommendations" className="flex flex-col gap-1 py-3">
+            <TabsTrigger 
+              value="recommendations" 
+              className="flex flex-col gap-1.5 py-3 px-2 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm"
+            >
               <Lightbulb className="h-4 w-4" />
-              <span className="text-xs">{t.tabs.tips}</span>
+              <span className="text-[10px] font-medium">{t.tabs.tips}</span>
             </TabsTrigger>
-            <TabsTrigger value="weather" className="flex flex-col gap-1 py-3">
+            <TabsTrigger 
+              value="weather" 
+              className="flex flex-col gap-1.5 py-3 px-2 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm"
+            >
               <Cloud className="h-4 w-4" />
-              <span className="text-xs">{t.tabs.weather}</span>
+              <span className="text-[10px] font-medium">{t.tabs.weather}</span>
             </TabsTrigger>
-            <TabsTrigger value="report" className="flex flex-col gap-1 py-3">
+            <TabsTrigger 
+              value="report" 
+              className="flex flex-col gap-1.5 py-3 px-2 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm"
+            >
               <FileText className="h-4 w-4" />
-              <span className="text-xs">{t.tabs.report}</span>
+              <span className="text-[10px] font-medium">{t.tabs.report}</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="input">
+          <TabsContent value="input" className="mt-0">
             <SoilDataForm onSubmit={handleAddSoilData} t={t} />
           </TabsContent>
 
-          <TabsContent value="dashboard">
+          <TabsContent value="dashboard" className="mt-0">
             <Dashboard soilData={soilData} t={t} />
           </TabsContent>
 
-          <TabsContent value="recommendations">
+          <TabsContent value="recommendations" className="mt-0">
             <RecommendationsPanel latestSoilData={getLatestSoilData()} t={t} />
           </TabsContent>
 
-          <TabsContent value="weather">
+          <TabsContent value="weather" className="mt-0">
             <WeatherWidget 
               weatherData={weatherData} 
               onWeatherUpdate={setWeatherData}
@@ -191,7 +220,7 @@ const Index = () => {
             />
           </TabsContent>
 
-          <TabsContent value="report">
+          <TabsContent value="report" className="mt-0">
             <ReportGenerator soilData={soilData} t={t} />
           </TabsContent>
         </Tabs>
