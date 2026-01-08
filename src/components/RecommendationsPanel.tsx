@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Lightbulb, AlertTriangle, CheckCircle, Leaf, Beaker, Bug } from "lucide-react";
+import { Lightbulb, AlertTriangle, CheckCircle, Beaker, Bug, Sparkles } from "lucide-react";
 import type { SoilData } from "@/pages/Index";
 import type { Translations } from "@/lib/translations";
 
@@ -12,15 +12,15 @@ interface RecommendationsPanelProps {
 export const RecommendationsPanel = ({ latestSoilData, t }: RecommendationsPanelProps) => {
   if (!latestSoilData) {
     return (
-      <Card>
-        <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Lightbulb className="h-5 w-5" />
-          {t.recommendations.title}
-        </CardTitle>
-        <CardDescription>
-          {t.recommendations.noData}
-        </CardDescription>
+      <Card className="border-dashed">
+        <CardHeader className="text-center py-12">
+          <div className="mx-auto mb-4 p-4 rounded-full bg-muted">
+            <Lightbulb className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <CardTitle className="text-lg">{t.recommendations.title}</CardTitle>
+          <CardDescription className="max-w-xs mx-auto">
+            {t.recommendations.noData}
+          </CardDescription>
         </CardHeader>
       </Card>
     );
@@ -146,11 +146,13 @@ export const RecommendationsPanel = ({ latestSoilData, t }: RecommendationsPanel
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Lightbulb className="h-5 w-5" />
-          {t.recommendations.title}
-        </CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <div className="p-2 rounded-lg bg-accent/10">
+              <Lightbulb className="h-5 w-5 text-accent" />
+            </div>
+            {t.recommendations.title}
+          </CardTitle>
           <CardDescription>
             {`${t.recommendations.basedOnLatest} - ${plant}`}
           </CardDescription>
@@ -159,20 +161,23 @@ export const RecommendationsPanel = ({ latestSoilData, t }: RecommendationsPanel
 
       {/* Status Overview */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-base">{t.recommendations.soilHealthStatus} {plant}</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-primary" />
+            {t.recommendations.soilHealthStatus} {plant}
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {alerts.map((alert, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-yellow-500" />
+              <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-soil-warning/10 border border-soil-warning/20">
+                <AlertTriangle className="h-4 w-4 text-soil-warning shrink-0 mt-0.5" />
                 <span className="text-sm">{alert}</span>
               </div>
             ))}
             {positives.map((positive, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-green-500" />
+              <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-soil-success/10 border border-soil-success/20">
+                <CheckCircle className="h-4 w-4 text-soil-success shrink-0 mt-0.5" />
                 <span className="text-sm">{positive}</span>
               </div>
             ))}
@@ -184,11 +189,15 @@ export const RecommendationsPanel = ({ latestSoilData, t }: RecommendationsPanel
       {recommendations.length > 0 && (
         <div className="space-y-3">
           {recommendations.map((rec, index) => (
-            <Card key={index}>
+            <Card key={index} className="overflow-hidden">
+              <div className={`h-1 ${rec.priority === 'high' ? 'bg-destructive' : 'bg-soil-warning'}`} />
               <CardContent className="pt-4">
                 <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-medium text-sm">{rec.title}</h3>
-                  <Badge variant={rec.priority === 'high' ? 'destructive' : 'secondary'}>
+                  <h3 className="font-semibold text-sm">{rec.title}</h3>
+                  <Badge 
+                    variant={rec.priority === 'high' ? 'destructive' : 'secondary'}
+                    className="text-[10px] uppercase tracking-wider"
+                  >
                     {rec.priority}
                   </Badge>
                 </div>
@@ -202,16 +211,18 @@ export const RecommendationsPanel = ({ latestSoilData, t }: RecommendationsPanel
       {/* Fertilizer Recommendations */}
       {fertilizers.length > 0 && (
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Beaker className="h-4 w-4" />
+              <div className="p-1.5 rounded-lg bg-primary/10">
+                <Beaker className="h-4 w-4 text-primary" />
+              </div>
               {t.recommendations.recommendedFertilizers} {plant}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 gap-2">
               {fertilizers.slice(0, 6).map((fertilizer, index) => (
-                <div key={index} className="p-2 bg-muted rounded-md">
+                <div key={index} className="p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
                   <span className="text-sm font-medium">{fertilizer}</span>
                 </div>
               ))}
@@ -223,16 +234,18 @@ export const RecommendationsPanel = ({ latestSoilData, t }: RecommendationsPanel
       {/* Pesticide/Pest Management */}
       {pesticides.length > 0 && (
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Bug className="h-4 w-4" />
+              <div className="p-1.5 rounded-lg bg-soil-warning/15">
+                <Bug className="h-4 w-4 text-soil-warning" />
+              </div>
               {t.recommendations.pestManagement} {plant}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 gap-2">
               {pesticides.slice(0, 6).map((pesticide, index) => (
-                <div key={index} className="p-2 bg-muted rounded-md">
+                <div key={index} className="p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
                   <span className="text-sm font-medium">{pesticide}</span>
                 </div>
               ))}
@@ -243,16 +256,31 @@ export const RecommendationsPanel = ({ latestSoilData, t }: RecommendationsPanel
 
       {/* General Tips */}
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-3">
           <CardTitle className="text-base">{t.recommendations.generalTips} {plant}</CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="text-sm space-y-1 text-muted-foreground">
-            <li>• Monitor soil conditions regularly for optimal {plant} growth</li>
-            <li>• Follow integrated pest management practices</li>
-            <li>• Apply fertilizers in split doses for better efficiency</li>
-            <li>• Maintain proper irrigation schedule based on growth stage</li>
-            <li>• Practice crop rotation to maintain soil health</li>
+          <ul className="text-sm space-y-2 text-muted-foreground">
+            <li className="flex items-start gap-2">
+              <span className="text-primary">•</span>
+              Monitor soil conditions regularly for optimal {plant} growth
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-primary">•</span>
+              Follow integrated pest management practices
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-primary">•</span>
+              Apply fertilizers in split doses for better efficiency
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-primary">•</span>
+              Maintain proper irrigation schedule based on growth stage
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-primary">•</span>
+              Practice crop rotation to maintain soil health
+            </li>
           </ul>
         </CardContent>
       </Card>

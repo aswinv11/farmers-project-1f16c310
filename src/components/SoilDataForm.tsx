@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Droplets, Zap, TestTube, Sprout } from "lucide-react";
+import { Droplets, Zap, TestTube, Sprout, Plus } from "lucide-react";
 import type { SoilData } from "@/pages/Index";
 import type { Translations } from "@/lib/translations";
 
@@ -58,9 +58,11 @@ export const SoilDataForm = ({ onSubmit, t }: SoilDataFormProps) => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <TestTube className="h-5 w-5" />
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <div className="p-2 rounded-lg bg-primary/10">
+            <TestTube className="h-5 w-5 text-primary" />
+          </div>
           {t.soilForm.title}
         </CardTitle>
         <CardDescription>
@@ -68,10 +70,12 @@ export const SoilDataForm = ({ onSubmit, t }: SoilDataFormProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="nitrogen" className="flex items-center gap-2">
-              <Zap className="h-4 w-4 text-yellow-500" />
+            <Label htmlFor="nitrogen" className="flex items-center gap-2 text-sm font-medium">
+              <div className="p-1 rounded bg-soil-nitrogen/15">
+                <Zap className="h-3.5 w-3.5 text-soil-nitrogen" />
+              </div>
               {t.soilForm.nitrogen}
             </Label>
             <Input
@@ -83,13 +87,15 @@ export const SoilDataForm = ({ onSubmit, t }: SoilDataFormProps) => {
               placeholder="e.g., 2.5"
               value={formData.nitrogen}
               onChange={(e) => setFormData(prev => ({ ...prev, nitrogen: e.target.value }))}
-              className="text-lg"
+              className="text-base h-12 bg-muted/30 border-muted focus:bg-background transition-colors"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="ph" className="flex items-center gap-2">
-              <TestTube className="h-4 w-4 text-blue-500" />
+            <Label htmlFor="ph" className="flex items-center gap-2 text-sm font-medium">
+              <div className="p-1 rounded bg-soil-ph/15">
+                <TestTube className="h-3.5 w-3.5 text-soil-ph" />
+              </div>
               {t.soilForm.ph}
             </Label>
             <Input
@@ -101,13 +107,15 @@ export const SoilDataForm = ({ onSubmit, t }: SoilDataFormProps) => {
               placeholder="e.g., 6.5"
               value={formData.ph}
               onChange={(e) => setFormData(prev => ({ ...prev, ph: e.target.value }))}
-              className="text-lg"
+              className="text-base h-12 bg-muted/30 border-muted focus:bg-background transition-colors"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="moisture" className="flex items-center gap-2">
-              <Droplets className="h-4 w-4 text-blue-600" />
+            <Label htmlFor="moisture" className="flex items-center gap-2 text-sm font-medium">
+              <div className="p-1 rounded bg-soil-moisture/15">
+                <Droplets className="h-3.5 w-3.5 text-soil-moisture" />
+              </div>
               {t.soilForm.moisture}
             </Label>
             <Input
@@ -119,17 +127,19 @@ export const SoilDataForm = ({ onSubmit, t }: SoilDataFormProps) => {
               placeholder="e.g., 35.0"
               value={formData.moisture}
               onChange={(e) => setFormData(prev => ({ ...prev, moisture: e.target.value }))}
-              className="text-lg"
+              className="text-base h-12 bg-muted/30 border-muted focus:bg-background transition-colors"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="plant" className="flex items-center gap-2">
-              <Sprout className="h-4 w-4 text-green-500" />
+            <Label htmlFor="plant" className="flex items-center gap-2 text-sm font-medium">
+              <div className="p-1 rounded bg-primary/15">
+                <Sprout className="h-3.5 w-3.5 text-primary" />
+              </div>
               {t.soilForm.plant}
             </Label>
             <Select value={formData.plant} onValueChange={(value) => setFormData(prev => ({ ...prev, plant: value }))}>
-              <SelectTrigger className="text-lg">
+              <SelectTrigger className="text-base h-12 bg-muted/30 border-muted focus:bg-background transition-colors">
                 <SelectValue placeholder={t.soilForm.plantPlaceholder} />
               </SelectTrigger>
               <SelectContent>
@@ -149,9 +159,10 @@ export const SoilDataForm = ({ onSubmit, t }: SoilDataFormProps) => {
 
           <Button 
             type="submit" 
-            className="w-full" 
+            className="w-full h-12 text-base font-semibold shadow-lg hover:shadow-xl transition-all" 
             disabled={!isValid}
           >
+            <Plus className="h-4 w-4 mr-2" />
             {t.soilForm.submit}
           </Button>
         </form>

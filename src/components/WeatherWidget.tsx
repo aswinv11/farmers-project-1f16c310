@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Cloud, Sun, CloudRain, MapPin, RefreshCw } from "lucide-react";
+import { Cloud, Sun, CloudRain, MapPin, RefreshCw, Thermometer, Droplets, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import type { WeatherData } from "@/pages/Index";
 import type { Translations } from "@/lib/translations";
@@ -85,11 +85,13 @@ export const WeatherWidget = ({ weatherData, onWeatherUpdate, isOnline, t }: Wea
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Cloud className="h-5 w-5" />
-          {t.weather.title}
-        </CardTitle>
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <div className="p-2 rounded-lg bg-accent/10">
+              <Cloud className="h-5 w-5 text-accent" />
+            </div>
+            {t.weather.title}
+          </CardTitle>
           <CardDescription>
             Current weather to help plan your farming activities
           </CardDescription>
@@ -97,8 +99,8 @@ export const WeatherWidget = ({ weatherData, onWeatherUpdate, isOnline, t }: Wea
         <CardContent>
           <form onSubmit={handleLocationSubmit} className="space-y-3">
             <div className="space-y-2">
-              <Label htmlFor="location" className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
+              <Label htmlFor="location" className="flex items-center gap-2 text-sm font-medium">
+                <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
                 Your Location
               </Label>
               <div className="flex gap-2">
@@ -108,11 +110,13 @@ export const WeatherWidget = ({ weatherData, onWeatherUpdate, isOnline, t }: Wea
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   disabled={!isOnline}
+                  className="h-11 bg-muted/30 border-muted focus:bg-background transition-colors"
                 />
                 <Button 
                   type="submit" 
                   disabled={loading || !isOnline || !location.trim()}
                   size="icon"
+                  className="h-11 w-11 shrink-0"
                 >
                   <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
                 </Button>
@@ -121,47 +125,72 @@ export const WeatherWidget = ({ weatherData, onWeatherUpdate, isOnline, t }: Wea
           </form>
 
           {!isOnline && (
-            <div className="mt-3 p-3 bg-muted/50 rounded text-sm text-muted-foreground">
-              {t.weather.noData}
+            <div className="mt-4 p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+              <p className="text-sm text-destructive">
+                {t.weather.noData}
+              </p>
             </div>
           )}
         </CardContent>
       </Card>
 
       {weatherData && (
-        <Card>
-          <CardContent className="pt-6">
+        <Card className="overflow-hidden">
+          <div className="bg-gradient-to-br from-accent/20 to-accent/5 p-6">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                {(() => {
-                  const IconComponent = getWeatherIcon(weatherData.description);
-                  return <IconComponent className="h-8 w-8 text-yellow-500" />;
-                })()}
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-2xl bg-card shadow-md">
+                  {(() => {
+                    const IconComponent = getWeatherIcon(weatherData.description);
+                    return <IconComponent className="h-10 w-10 text-accent" />;
+                  })()}
+                </div>
                 <div>
-                  <div className="text-2xl font-bold">{weatherData.temperature}°C</div>
-                  <div className="text-sm text-muted-foreground">{weatherData.description}</div>
+                  <div className="text-4xl font-bold">{weatherData.temperature}°C</div>
+                  <div className="text-sm text-muted-foreground font-medium">{weatherData.description}</div>
                 </div>
               </div>
-              <div className="text-right">
-                <div className="text-lg font-semibold">{weatherData.humidity}%</div>
-                <div className="text-sm text-muted-foreground">{t.weather.humidity}</div>
+              <div className="text-right space-y-2">
+                <div className="flex items-center gap-2 justify-end">
+                  <Droplets className="h-4 w-4 text-soil-moisture" />
+                  <span className="text-lg font-semibold">{weatherData.humidity}%</span>
+                </div>
+                <div className="text-xs text-muted-foreground">{t.weather.humidity}</div>
               </div>
             </div>
-            
-            <div className="mt-4 p-3 bg-muted/30 rounded">
-              <h4 className="font-medium text-sm mb-2">Farming Tips</h4>
-              <ul className="text-xs space-y-1 text-muted-foreground">
+          </div>
+          
+          <CardContent className="pt-4">
+            <div className="p-4 bg-muted/30 rounded-xl">
+              <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                <Thermometer className="h-4 w-4 text-accent" />
+                Farming Tips
+              </h4>
+              <ul className="text-sm space-y-2 text-muted-foreground">
                 {weatherData.temperature > 30 && (
-                  <li>• High temperature - ensure adequate watering</li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-accent">•</span>
+                    High temperature - ensure adequate watering
+                  </li>
                 )}
                 {weatherData.humidity > 70 && (
-                  <li>• High humidity - watch for fungal diseases</li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-accent">•</span>
+                    High humidity - watch for fungal diseases
+                  </li>
                 )}
                 {weatherData.description.toLowerCase().includes('rain') && (
-                  <li>• Rainy conditions - delay fertilizer application</li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-accent">•</span>
+                    Rainy conditions - delay fertilizer application
+                  </li>
                 )}
                 {weatherData.description.toLowerCase().includes('sunny') && (
-                  <li>• Good conditions for harvesting and fieldwork</li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-accent">•</span>
+                    Good conditions for harvesting and fieldwork
+                  </li>
                 )}
               </ul>
             </div>
